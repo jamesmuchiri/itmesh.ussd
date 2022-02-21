@@ -72,18 +72,18 @@ def ussd_callback():
 
         
         phone_number = request.values.get("phoneNumber", "default")
-        Fetch_Number = phone_number.split("+")[1]
-        print(Fetch_Number)
+        variables.Fetch_Number = phone_number.split("+")[1]
+        print(variables.Fetch_Number)
 
         mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
         if (variables.Fetch_Number,) in checkNumber:
             variables.isregistered=True
             mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             name = mycursor.fetchone()
             variables.namef = name[0]
         else:
@@ -100,7 +100,7 @@ def ussd_callback():
     elif text.lower().strip() =="loan":
 
         mycursor = db.cursor()
-        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
+        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         loan_limit = mycursor.fetchone()
 
         if variables.isregistered==True:
