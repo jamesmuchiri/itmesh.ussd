@@ -75,7 +75,7 @@ def ussd_callback():
                     ).format(Good_Evening)
 
 
-    elif text.lower().strip =="balance":
+    elif text.lower().strip() =="balance":
         phone_number = request.values.get("phoneNumber", "default")
         Fetch_Number = phone_number.split("+")[1]
         print(Fetch_Number)
