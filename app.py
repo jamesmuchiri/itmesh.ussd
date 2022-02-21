@@ -77,27 +77,25 @@ def ussd_callback():
                     ).format(Good_Evening)
             response = make_response(menu_text, 200)
 
-    balance()
-    return response
-def balance():
-    
-    mycursor = db.cursor()
-    mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-    checkEmail = mycursor.fetchall()
-    if variables.text =="balance":
+  
+    elif variables.text =="balance":
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        checkEmail = mycursor.fetchall()
+        
         if (variables.Fetch_Number,) in checkEmail:
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             name = mycursor.fetchone()
             menu_text =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-            ).format(name)
+                ).format(name)
             response = make_response(menu_text, 200)
 
 
         else:
-            menu_text =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            response = make_response(menu_text, 200)
+                menu_text =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+                response = make_response(menu_text, 200)
     else:
         menu_text = "END Invalid input. Try again." 
         response = make_response(menu_text, 200) 
