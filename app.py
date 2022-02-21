@@ -43,8 +43,8 @@ def ussd_callback():
     kenya_time = now.hour +3
     
     if text == "":  
-        Fetch_Number = phone_number.split("+")[1]
-        print(Fetch_Number)
+        variables.Fetch_Number = phone_number.split("+")[1]
+        print(variables.Fetch_Number)
 
 
         if 5<= kenya_time <12 :
@@ -76,13 +76,13 @@ def ussd_callback():
 
     elif text =="balance":
         mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
-        checkNumber = mycursor.fetchall()
-        print (checkNumber)
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        checkEmail = mycursor.fetchall()
+        print(checkEmail)
     
-        if (Fetch_Number,) in checkNumber:
+        if (variables.Fetch_Number,) in checkEmail:
             mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             name = mycursor.fetchone()
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
