@@ -74,7 +74,7 @@ def ussd_callback():
                     ).format(Good_Evening)
 
 
-    elif variables.text =="balance":
+    elif text =="balance":
         mycursor = db.cursor()
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         checkEmail = mycursor.fetchall()
