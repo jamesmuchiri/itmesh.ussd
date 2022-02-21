@@ -80,8 +80,8 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if  checkNumber is None:
-            variables.isregistered=False  
+        if checkNumber is None:
+            variables.isregistered=False    
            
         else:
             variables.isregistered=True
@@ -89,7 +89,7 @@ def ussd_callback():
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             name = mycursor.fetchone()
             variables.namef = name[0]
-                      
+                    
         
 
     elif variables.text.lower().strip() =="balance":
@@ -98,8 +98,6 @@ def ussd_callback():
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
             ).format(variables.namef)
-            
-           
 
     elif variables.text.lower().strip() =="loan":
 
@@ -128,10 +126,6 @@ def ussd_callback():
 
                     variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
                     ).format(variables.namef,loan_limit[0])
-                
-
-            variables.isregistered=False  
-           
                 
 
         
