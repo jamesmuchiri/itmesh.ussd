@@ -93,7 +93,7 @@ def ussd_callback():
                 response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
         else:
             response = "END Invalid input. Try again."  
-        return response
+        
     return response
     
         
