@@ -31,7 +31,7 @@ db = mysql.connector.connect(
 
 
 def ussd_callback():
-    global response
+    
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
     phone_number = request.values.get("phoneNumber", "default")
@@ -49,58 +49,51 @@ def ussd_callback():
 
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
-            menu_text =("CON {}" "\nHow may i help you"
+            variables.response =("CON {}" "\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
             ).format(Good_Morning)
-            response = make_response(menu_text, 200)
-
 
         elif  12 <= kenya_time < 17 :
             Good_Afternoon="Good Afternoon"
-            menu_text =("CON {}""\nHow may i help you"
+            variables.response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Afternoon)
-            response = make_response(menu_text, 200)
         else:
             Good_Evening="Good Evening"
-            menu_text =("CON {}""\nHow may i help you"
+            variables.response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Evening)
-            response = make_response(menu_text, 200)
 
-  
+
     elif variables.text =="balance":
         mycursor = db.cursor()
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         checkEmail = mycursor.fetchall()
-        
+    
         if (variables.Fetch_Number,) in checkEmail:
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             name = mycursor.fetchone()
-            menu_text =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-                ).format(name)
-            response = make_response(menu_text, 200)
+            ).format(name)
 
 
         else:
-                menu_text =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-                response = make_response(menu_text, 200)
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
     else:
-        menu_text = "END Invalid input. Try again." 
-        response = make_response(menu_text, 200) 
-    return response
+        variables.response = "END Invalid input. Try again."  
     
+    return variables.response
     
         
 if __name__ == "__main__":
