@@ -111,7 +111,7 @@ def ussd_callback():
             
             text_array = variables.text.split("*")
             resent_text = text_array[len(text_array) - 1]
-            loan = loan_limit[0]
+            loan = int(loan_limit[0])
 
             if int(resent_text) > loan or int(resent_text) < 500:
 
