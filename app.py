@@ -111,13 +111,12 @@ def ussd_callback():
             
             text_array = variables.text.split("*")
             resent_text = text_array[len(text_array) - 1]
-            loan = int(float(loan_limit[0]))
+            loan = loan_limit[0]
 
-            if int(float(resent_text)) > loan or int(float(resent_text)) < 500:
+            print (resent_text)
+            print (int(loan))
 
-                variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-                ).format(variables.namef,loan_limit[0])
-                
+           
 
         
 
