@@ -97,6 +97,17 @@ def ussd_callback():
 
             ).format(variables.namef)
 
+    elif text.lower().strip() =="loan":
+
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
+        loan_limit = mycursor.fetchone()
+
+        if variables.isregistered==True:
+            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+
+            ).format(variables.namef,loan_limit[0])
+
     else:
         if variables.isregistered==True:
             variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
