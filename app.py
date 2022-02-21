@@ -36,7 +36,7 @@ def ussd_callback():
     service_code = request.values.get("serviceCode", None)
     phone_number = request.values.get("phoneNumber")
 
-    variables.Fetch_Number = phone_number.split('+')[1]
+    variables.Fetch_Number = phone_number.split("+")[1]
     text = request.values.get("text", "default")
 
     now = maya.MayaDT.from_datetime(datetime.utcnow())
