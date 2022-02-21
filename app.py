@@ -33,12 +33,12 @@ def ussd_callback():
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
-    text = request.values.get("text", "default")
+    variables.text = request.values.get("text", "default")
 
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
     
-    if text == "": 
+    if variables.text == "": 
         phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
@@ -90,14 +90,14 @@ def ussd_callback():
             variables.isregistered=False            
         
 
-    elif text.lower().strip() =="balance":
+    elif variables.text.lower().strip() =="balance":
         
         if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
             ).format(variables.namef)
 
-    elif text.lower().strip() =="loan":
+    elif variables.text.lower().strip() =="loan":
 
         mycursor = db.cursor()
         mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
@@ -107,6 +107,18 @@ def ussd_callback():
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
             ).format(variables.namef,loan_limit[0])
+
+            
+            text_array = variables.text.split("*")
+            resent_text = text_array[len(text_array) - 1]
+
+            if resent_text > loan_limit[0] or resent_text < 500:
+
+                variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                ).format(variables.namef,loan_limit[0])
+                
+
+        
 
     else:
         if variables.isregistered==True:
