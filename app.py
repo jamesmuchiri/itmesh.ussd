@@ -49,29 +49,33 @@ def ussd_callback():
 
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
-            response =("CON {}" "\nHow may i help you"
+            menu_text =("CON {}" "\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
             ).format(Good_Morning)
+            response = make_response(menu_text, 200)
+
 
         elif  12 <= kenya_time < 17 :
             Good_Afternoon="Good Afternoon"
-            response =("CON {}""\nHow may i help you"
+            menu_text =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Afternoon)
+            response = make_response(menu_text, 200)
         else:
             Good_Evening="Good Evening"
-            response =("CON {}""\nHow may i help you"
+            menu_text =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Evening)
+            response = make_response(menu_text, 200)
 
         balance()
     def balance():
@@ -84,16 +88,19 @@ def ussd_callback():
                 mycursor = db.cursor()
                 mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
                 name = mycursor.fetchone()
-                response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+                menu_text =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
                 ).format(name)
+                response = make_response(menu_text, 200)
 
 
             else:
-                response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+                menu_text =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+                response = make_response(menu_text, 200)
         else:
-            response = "END Invalid input. Try again."  
-        
+            menu_text = "END Invalid input. Try again." 
+            response = make_response(menu_text, 200) 
+        return response
     return response
     
         
