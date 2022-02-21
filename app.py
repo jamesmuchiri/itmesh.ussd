@@ -30,7 +30,7 @@ db = mysql.connector.connect(
 @app.route('/', methods=['POST', 'GET'])
 
 
-def ussd_callback():
+def ussd_callback(response):
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -49,7 +49,7 @@ def ussd_callback():
 
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
-            variables.response =("CON {}" "\nHow may i help you"
+            response =("CON {}" "\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
@@ -58,7 +58,7 @@ def ussd_callback():
 
         elif  12 <= kenya_time < 17 :
             Good_Afternoon="Good Afternoon"
-            variables.response =("CON {}""\nHow may i help you"
+            response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
@@ -66,34 +66,35 @@ def ussd_callback():
                     ).format(Good_Afternoon)
         else:
             Good_Evening="Good Evening"
-            variables.response =("CON {}""\nHow may i help you"
+            response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Evening)
 
-    def balance():
-    
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        checkEmail = mycursor.fetchall()
-        if variables.text =="balance":
-            if (variables.Fetch_Number,) in checkEmail:
-                mycursor = db.cursor()
-                mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-                name = mycursor.fetchone()
-                variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+    return response
+def balance(response):
+   
+    mycursor = db.cursor()
+    mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+    checkEmail = mycursor.fetchall()
+    if variables.text =="balance":
+        if (variables.Fetch_Number,) in checkEmail:
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            name = mycursor.fetchone()
+            response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-                ).format(name)
+            ).format(name)
 
 
-            else:
-                variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
         else:
-            variables.response = "END Invalid input. Try again."  
-        return balance
-    return variables.response
+            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+    else:
+        response = "END Invalid input. Try again."  
+    
+    return response
     
         
 if __name__ == "__main__":
