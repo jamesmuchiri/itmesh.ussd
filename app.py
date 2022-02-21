@@ -34,7 +34,7 @@ def ussd_callback():
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
-    phone_number = request.values.get("phoneNumber", "default")
+    
 
     
     text = request.values.get("text", "default")
@@ -42,7 +42,8 @@ def ussd_callback():
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
     
-    if text == "":  
+    if text == "": 
+        phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
 
@@ -75,14 +76,17 @@ def ussd_callback():
 
 
     elif text =="balance":
+        phone_number = request.values.get("phoneNumber", "default")
+        Fetch_Number = phone_number.split("+")[1]
+        print(Fetch_Number)
         mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
         checkEmail = mycursor.fetchall()
         print(checkEmail)
     
         if (variables.Fetch_Number,) in checkEmail:
             mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
             name = mycursor.fetchone()
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
