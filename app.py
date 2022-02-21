@@ -103,14 +103,16 @@ def ussd_callback():
         mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         loan_limit = mycursor.fetchone()
 
+        variables.response_loan = False
+
         if variables.isregistered==True:
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
             ).format(variables.namef,loan_limit[0])
             
-            response_loan = True
+            variables.response_loan = True
 
-            if response_loan == True:
+            if variables.response_loan == True:
                 text_array = variables.text.split("*")
                 resent_text = text_array[len(text_array) - 1]
                 loan = loan_limit[0]
