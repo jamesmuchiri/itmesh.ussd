@@ -34,16 +34,19 @@ def ussd_callback():
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
-    phone_number = request.values.get("phoneNumber")
+    phone_number = request.values.get("phoneNumber", "default")
 
-    variables.Fetch_Number = phone_number
+    
     text = request.values.get("text", "default")
 
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
     
     if text == "":  
-        
+        variables.Fetch_Number = phone_number.split("+")[1]
+        print(variables.Fetch_Number)
+
+
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
             variables.response =("CON {}" "\nHow may i help you"
@@ -76,7 +79,7 @@ def balance():
     mycursor = db.cursor()
     mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
     checkEmail = mycursor.fetchall()
-    if variables.text =="Balance":
+    if variables.text =="balance":
         if (variables.Fetch_Number,) in checkEmail:
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
