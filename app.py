@@ -61,7 +61,7 @@ def ussd_callback():
                     ).format(Good_Evening)
 
     elif variables.text =="Balance":
-        return Balance.balance
+        return Balance.balance()
 
     else:
         variables.response = "END Invalid input. Try again."
