@@ -30,7 +30,7 @@ db = mysql.connector.connect(
 @app.route('/', methods=['POST', 'GET'])
 
 
-def ussd_callback(response):
+def ussd_callback():
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -73,28 +73,28 @@ def ussd_callback(response):
                                 "\n  -Amount"
                     ).format(Good_Evening)
 
-    return response
-def balance(response):
-   
-    mycursor = db.cursor()
-    mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-    checkEmail = mycursor.fetchall()
-    if variables.text =="balance":
-        if (variables.Fetch_Number,) in checkEmail:
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            name = mycursor.fetchone()
-            response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-
-            ).format(name)
-
-
-        else:
-            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-    else:
-        response = "END Invalid input. Try again."  
+        balance()
+    def balance():
     
-    return response
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        checkEmail = mycursor.fetchall()
+        if variables.text =="balance":
+            if (variables.Fetch_Number,) in checkEmail:
+                mycursor = db.cursor()
+                mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+                name = mycursor.fetchone()
+                response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+
+                ).format(name)
+
+
+            else:
+                response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+        else:
+            response = "END Invalid input. Try again."  
+        
+        return response
     
         
 if __name__ == "__main__":
