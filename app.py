@@ -3,6 +3,7 @@ import africastalking
 import os
 from datetime import datetime
 import maya
+from sqlalchemy import true
 import variables
 from maya import MayaInterval
 from dateutil.parser import parse
@@ -107,16 +108,22 @@ def ussd_callback():
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
             ).format(variables.namef,loan_limit[0])
-
             
-            text_array = variables.text.split("*")
-            resent_text = text_array[len(text_array) - 1]
-            loan = loan_limit[0]
+            response_loan = True
 
-            print (resent_text)
-            print (int(loan))
+            if response_loan == True:
+                text_array = variables.text.split("*")
+                resent_text = text_array[len(text_array) - 1]
+                loan = loan_limit[0]
 
-           
+                print (resent_text)
+                print (int(loan))
+
+                if int(resent_text) > int(loan) or int(resent_text) < 500:
+
+                    variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                    ).format(variables.namef,loan_limit[0])
+                
 
         
 
