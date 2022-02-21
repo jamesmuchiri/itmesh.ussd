@@ -29,14 +29,10 @@ db = mysql.connector.connect(
     
 @app.route('/', methods=['POST', 'GET'])
 
-
 def ussd_callback():
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
-    
-
-    
     text = request.values.get("text", "default")
 
     now = maya.MayaDT.from_datetime(datetime.utcnow())
@@ -74,31 +70,40 @@ def ussd_callback():
                                 "\n  -Amount"
                     ).format(Good_Evening)
 
-
-    elif text.lower().strip() =="balance":
+        
         phone_number = request.values.get("phoneNumber", "default")
         Fetch_Number = phone_number.split("+")[1]
         print(Fetch_Number)
 
         mycursor = db.cursor()
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
-        checkEmail = mycursor.fetchall()
-        print(checkEmail)
-    
-        if (variables.Fetch_Number,) in checkEmail:
+        checkNumber = mycursor.fetchall()
+        print(checkNumber)
+
+        if (variables.Fetch_Number,) in checkNumber:
+            variables.isregistered=True
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (Fetch_Number,))
             name = mycursor.fetchone()
-            
+            variables.namef = name[0]
+        else:
+            variables.isregistered=False            
+        
+
+    elif text.lower().strip() =="balance":
+        
+        if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-            ).format(name[0])
+            ).format(variables.namef)
 
 
         else:
             variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
     else:
-        variables.response = "END Invalid input. Try again."  
+        if variables.isregistered==True:
+            variables.response = ( "END Dear $first_name, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+            ).format(variables.namef)
     
     return variables.response
     
