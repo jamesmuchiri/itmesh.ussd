@@ -56,6 +56,10 @@ def ussd_callback():
             variables.number = row[6]
             print("Number = ", row[6])
 
+            n = row[6]
+            nf = "+" + str(n)
+            print(nf)
+
         if variables.Fetch_Number == variables.number:
             variables.response =("CON How may i help you"
                             "\n  -Limit "
