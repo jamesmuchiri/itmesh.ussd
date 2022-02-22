@@ -1,7 +1,7 @@
 from flask import Flask, request
 import africastalking
 import os
-from datetime import datetime
+from datetime import datetime, date
 import maya
 import variables
 from maya import MayaInterval
@@ -76,25 +76,28 @@ def ussd_callback():
         mycursor = db.cursor()
         mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
+        today = date.today()
+        d2 = today.strftime("%B %d, %Y")
+
+
         for row in records:
             name = row[2]
             print("Name = ", row[2])
 
 
-            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-            ).format(name)
+            variables.response =("END Dear {}, your effective balance as at {} is KES $loan_balance."
+            ).format(name,d2)
             
         
             
     elif variables.text.lower().strip() =="loan" :
-        global loan_limit
         
         mycursor = db.cursor()
         mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
         for row in records:
             variables.namef = row[2]
-            variables.now = row[24]
+            variables.loan_limit = row[24]
             print("Name = ", row[2])
             print("Loan_limmit = ", row[24])
 
@@ -102,7 +105,7 @@ def ussd_callback():
 
 
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-            ).format(variables.namef,variables.now)
+            ).format(variables.namef,variables.loan_limit)
             
             variables.response_loan = True
 
@@ -120,16 +123,12 @@ def ussd_callback():
         if int(float(str(resent_text))) < 500 or int(float(str(resent_text))) > int(float(str(variables.now))):
 
             variables.response =("END Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-            ).format(variables.namef,variables.now)       
+            ).format(variables.namef,variables.loan_limit)       
 
 
         else:
             variables.response =("END Dear {}, please note we do not disburse advances after the 15th of every month."
-            ).format(variables.namef)  
-            
-            
-
-        
+            ).format(variables.namef)    
 
     else:
 
