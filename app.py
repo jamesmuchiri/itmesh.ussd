@@ -53,22 +53,23 @@ def ussd_callback():
     
     if variables.text == "": 
         for row in records:
+            
             n = row[6]
             print("Number = ", row[6])
             variables.number = "+" + str(n)
             print(variables.number)
 
-        if variables.Fetch_Number == variables.number:
-            variables.response =("CON How may i help you"
-                            "\n  -Limit "
-                            "\n  -Balance"
-                            "\n  -Loan"
-                            "\n  -Amount")
+            if variables.Fetch_Number == variables.number:
+                variables.response =("CON How may i help you"
+                                "\n  -Limit "
+                                "\n  -Balance"
+                                "\n  -Loan"
+                                "\n  -Amount")
 
-      
-        else:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            variables.isregistered=False  
+        
+            else:
+                variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+                variables.isregistered=False  
         
             
 
