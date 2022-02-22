@@ -45,7 +45,7 @@ def ussd_callback():
     variables.text = request.values.get("text", "default")
 
     phone_number = request.values.get("phoneNumber", "default")
-    variables.Fetch_Number = phone_number.split("+")[1]
+    variables.Fetch_Number = phone_number
     print(variables.Fetch_Number)
 
     
