@@ -3,6 +3,7 @@ import africastalking
 import os
 from datetime import datetime
 import maya
+from sqlalchemy import null
 import variables
 from maya import MayaInterval
 from dateutil.parser import parse
@@ -57,7 +58,7 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if checkNumber is None:
+        if checkNumber is []:
             variables.isregistered=False    
            
         else:
