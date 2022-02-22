@@ -1,4 +1,3 @@
-from unicodedata import name
 from flask import Flask, request
 import africastalking
 import os
@@ -50,10 +49,13 @@ def ussd_callback():
 
         mycursor = db.cursor()
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        checkNumber = mycursor.fetchall()
-        print(checkNumber)
+        records = mycursor.fetchall()
 
-        if (variables.Fetch_Number,) in checkNumber:
+        for row in records:
+            number = row[6]
+            print("Number = ", row[6])
+
+        if variables.Fetch_Number == number:
             variables.response =("CON How may i help you"
                             "\n  -Limit "
                             "\n  -Balance"
@@ -78,8 +80,8 @@ def ussd_callback():
             print("Name = ", row[2])
 
 
-        variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-        ).format(name)
+            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+            ).format(name)
             
         
             
@@ -97,8 +99,8 @@ def ussd_callback():
         
 
 
-        variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-        ).format(name,loan_limit)
+            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+            ).format(name,loan_limit)
             
         variables.response_loan = True
 
