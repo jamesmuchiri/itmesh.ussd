@@ -75,12 +75,10 @@ def ussd_callback():
 
     elif variables.text.lower().strip() =="balance" :
 
-        if variables.isregistered==True:
-            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-            ).format(variables.namef[0])
+        variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+        ).format(variables.namef[0])
             
-        else:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+        
             
     elif variables.text.lower().strip() =="loan" :
 
