@@ -1,4 +1,3 @@
-from tkinter import NO
 from flask import Flask, request
 import africastalking
 import os
