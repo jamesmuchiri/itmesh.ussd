@@ -39,37 +39,34 @@ def ussd_callback():
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
 
-    variables.Fetch_Number  = request.values.get("phoneNumber", "default")
-    print(variables.Fetch_Number)
-
-    mycursor = db.cursor()
-    mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-    records = mycursor.fetchall()
-
-    
-
-
 
     
     if variables.text == "": 
-        for row in records:
-            
-            n = row[6]
-            print("Number = ", row[6])
-            variables.number = "+" + str(n)
-            print(variables.number)
 
-            if variables.Fetch_Number == variables.number:
-                variables.response =("CON How may i help you"
-                                "\n  -Limit "
-                                "\n  -Balance"
-                                "\n  -Loan"
-                                "\n  -Amount")
+        phone_number = request.values.get("phoneNumber", "default")
+        variables.Fetch_Number = phone_number.split("+")[1]
+        print(variables.Fetch_Number)
+
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        records = mycursor.fetchall()
 
         
-            else:
-                variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-                variables.isregistered=False  
+        for row in records:
+            variables.number = row[6]
+            print("Number = ", row[6])
+
+        if variables.Fetch_Number == variables.number:
+            variables.response =("CON How may i help you"
+                            "\n  -Limit "
+                            "\n  -Balance"
+                            "\n  -Loan"
+                            "\n  -Amount")
+
+      
+        else:
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+            variables.isregistered=False  
         
             
 
