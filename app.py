@@ -1,3 +1,5 @@
+from tkinter import NO
+from urllib import response
 from flask import Flask, request
 import africastalking
 import os
@@ -30,7 +32,7 @@ db = mysql.connector.connect(
 @app.route('/', methods=['POST', 'GET'])
 
 def ussd_callback():
-
+    
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -42,6 +44,7 @@ def ussd_callback():
 
     
     if variables.text == "": 
+
         phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
@@ -51,55 +54,58 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if checkNumber is not None:
-            variables.isregistered=True
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            variables.namef = mycursor.fetchone()
-           
-        else:
-            variables.isregistered=False   
-            
-            
-
-
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
-            variables.response =("CON {}" "\nHow may i help you"
+            response =("CON {}" "\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
             ).format(Good_Morning)
-
+            return response
+            
         elif  12 <= kenya_time < 17 :
             Good_Afternoon="Good Afternoon"
-            variables.response =("CON {}""\nHow may i help you"
+            response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Afternoon)
+            return response  
+
         else:
             Good_Evening="Good Evening"
-            variables.response =("CON {}""\nHow may i help you"
+            response =("CON {}""\nHow may i help you"
                                 "\n  -Limit "
                                 "\n  -Balance"
                                 "\n  -Loan"
                                 "\n  -Amount"
                     ).format(Good_Evening)
+            return response
 
+
+        if checkNumber is not None:
+            variables.isregistered=True 
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            variables.namef = mycursor.fetchone()
+            return True
+           
+        else:
+            variables.isregistered=False  
+            return False 
     
-        
-                    
-        
 
     elif variables.text.lower().strip() =="balance" :
 
         if variables.isregistered==True:
-            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+            response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
             ).format(variables.namef[0])
-
+            return response
+        else:
+            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+            return response
     elif variables.text.lower().strip() =="loan" :
 
         mycursor = db.cursor()
