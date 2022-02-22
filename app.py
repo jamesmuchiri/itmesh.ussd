@@ -67,6 +67,7 @@ def ussd_callback():
 
       
         else:
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
             variables.isregistered=False  
         
             
@@ -119,11 +120,9 @@ def ussd_callback():
         
 
     else:
-        if variables.isregistered==False:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-           
-        else:
-            response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+        
+  
+        variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
             ).format(variables.namef)
             
             
