@@ -77,7 +77,7 @@ def ussd_callback():
         mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
         today = date.today()
-        d2 = today.strftime("%B %d, %Y")
+        d2 = today.strftime("%b-%d-%Y")
 
 
         for row in records:
