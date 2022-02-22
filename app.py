@@ -38,34 +38,33 @@ def ussd_callback():
     variables.response_loan = False
     variables.namef=""
     
-    now = maya.MayaDT.from_datetime(datetime.utcnow())
-    kenya_time = now.hour +3
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
     variables.text = request.values.get("text", "default")
 
-    phone_number = request.values.get("phoneNumber", "default")
-    variables.Fetch_Number = phone_number
-    print(variables.Fetch_Number)
-
-    
-
-    mycursor = db.cursor()
-    mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-    checkNumber = mycursor.fetchall()
-    print(checkNumber)
-
-    if checkNumber is None:
-        variables.isregistered=False    
-            
-    else:
-        variables.isregistered=True
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        variables.namef = mycursor.fetchone()
-        
+    now = maya.MayaDT.from_datetime(datetime.utcnow())
+    kenya_time = now.hour +3
     
     if variables.text == "": 
+
+
+        phone_number = request.values.get("phoneNumber", "default")
+        variables.Fetch_Number = phone_number.split("+")[1]
+        print(variables.Fetch_Number)
+
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        checkNumber = mycursor.fetchall()
+        print(checkNumber)
+
+        if checkNumber is None:
+            variables.isregistered=False    
+           
+        else:
+            variables.isregistered=True
+            
+
+
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
             variables.response =("CON {}" "\nHow may i help you"
@@ -93,19 +92,22 @@ def ussd_callback():
                     ).format(Good_Evening)
 
     
-    
+        
                     
         
 
-    elif variables.text.lower().strip() =="balance":
-            
-        if variables.isregistered==True:
-            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-
-            ).format(variables.namef[0])
-
+    elif variables.text.lower().strip() =="balance" and variables.isregistered==True:
         
-    elif variables.text.lower().strip() =="loan":
+        
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        name = mycursor.fetchone()
+        variables.namef = name[0]
+
+        variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+        ).format(variables.namef)
+
+    elif variables.text.lower().strip() =="loan" and variables.isregistered==True:
 
         mycursor = db.cursor()
         mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
@@ -114,10 +116,16 @@ def ussd_callback():
         variables.response_loan = False
 
         if variables.isregistered==True:
+
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            name = mycursor.fetchone()
+            variables.namef = name[0]
+
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
-                ).format(variables.namef[0],loan_limit[0])
-                
+            ).format(variables.namef,loan_limit[0])
+            
             variables.response_loan = True
 
             if variables.response_loan == True:
@@ -131,19 +139,19 @@ def ussd_callback():
                 if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
 
                     variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-                    ).format(variables.namef[0],loan_limit[0])
-                    
+                    ).format(variables.namef,loan_limit[0])
+                
 
         
 
     else:
         if variables.isregistered==False:
             variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            
+           
         else:
             variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
-                ).format(variables.namef[0])
-                
+            ).format(variables.namef)
+            
     
     return variables.response
     
