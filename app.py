@@ -46,16 +46,17 @@ def ussd_callback():
     mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
     records = mycursor.fetchall()
 
-    for row in records:
-        n = row[6]
-        print("Number = ", row[6])
-        variables.number = "+" + str(n)
-        print(variables.number)
+    
 
 
 
     
     if variables.text == "": 
+        for row in records:
+            n = row[6]
+            print("Number = ", row[6])
+            variables.number = "+" + str(n)
+            print(variables.number)
 
         if variables.Fetch_Number == variables.number:
             variables.response =("CON How may i help you"
