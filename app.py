@@ -1,3 +1,4 @@
+from tkinter import NO
 from flask import Flask, request
 import africastalking
 import os
@@ -55,8 +56,8 @@ def ussd_callback():
             variables.isregistered=True
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            name = mycursor.fetchone()
-            variables.namef = name[0]
+            variables.namef = mycursor.fetchone()
+           
         else:
             variables.isregistered=False   
             
@@ -98,7 +99,7 @@ def ussd_callback():
 
         if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-            ).format(variables.namef)
+            ).format(variables.namef[0])
 
     elif variables.text.lower().strip() =="loan" :
 
