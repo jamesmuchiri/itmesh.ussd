@@ -104,7 +104,7 @@ def ussd_callback():
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
             ).format(variables.namef,variables.now)
             
-        variables.response_loan = True
+            variables.response_loan = True
 
             
     elif variables.response_loan == True:  
