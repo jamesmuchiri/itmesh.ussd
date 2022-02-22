@@ -31,8 +31,7 @@ db = mysql.connector.connect(
 
 def ussd_callback():
     
-    global response
-    
+
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
     variables.text = request.values.get("text", "default")
@@ -60,13 +59,12 @@ def ussd_callback():
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             variables.namef = mycursor.fetchone()
 
-            response =("CON How may i help you"
+            variables.response =("CON How may i help you"
                             "\n  -Limit "
                             "\n  -Balance"
                             "\n  -Loan"
                             "\n  -Amount")
 
-            return response
       
         else:
             variables.isregistered=False  
@@ -77,12 +75,12 @@ def ussd_callback():
     elif variables.text.lower().strip() =="balance" :
 
         if variables.isregistered==True:
-            response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
             ).format(variables.namef[0])
-            return response
+            
         else:
-            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            return response
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+            
     elif variables.text.lower().strip() =="loan" :
 
         mycursor = db.cursor()
@@ -98,7 +96,7 @@ def ussd_callback():
             name = mycursor.fetchone()
             variables.namef = name[0]
 
-            response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
             ).format(variables.namef,loan_limit[0])
             
@@ -114,7 +112,7 @@ def ussd_callback():
 
                 if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
 
-                    response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                    variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
                     ).format(variables.namef,loan_limit[0])
                 
 
@@ -122,15 +120,15 @@ def ussd_callback():
 
     else:
         if variables.isregistered==False:
-            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            return response
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+           
         else:
             response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
             ).format(variables.namef)
-            return response
+            
             
     
-    return response
+    return variables.response
     
         
 if __name__ == "__main__":
