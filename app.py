@@ -87,10 +87,10 @@ def ussd_callback():
         mycursor = db.cursor()
         mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         name = mycursor.fetchone()
-        variables.namef = name[0]
+
 
         variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-        ).format(variables.namef,loan_limit[0])
+        ).format(variables.namef[0],loan_limit[0])
             
         variables.response_loan = True
 
@@ -115,8 +115,6 @@ def ussd_callback():
         
 
     else:
-        
-  
         variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
             ).format(variables.namef)
             
