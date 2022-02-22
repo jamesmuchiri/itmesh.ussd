@@ -30,6 +30,13 @@ db = mysql.connector.connect(
 @app.route('/', methods=['POST', 'GET'])
 
 def ussd_callback():
+
+    variables.response =""
+    variables.Fetch_Number = ""
+    variables.text =""
+    variables.isregistered = False
+    variables.response_loan = False
+    variables.namef=""
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -122,7 +129,7 @@ def ussd_callback():
                 print (resent_text)
                 print (int(loan))
 
-                if int(resent_text) > int(loan) or int(resent_text) < 500:
+                if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
 
                     variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
                     ).format(variables.namef,loan_limit[0])
