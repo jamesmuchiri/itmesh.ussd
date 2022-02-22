@@ -48,7 +48,7 @@ def ussd_callback():
         print(variables.Fetch_Number)
 
         mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
 
         for row in records:
