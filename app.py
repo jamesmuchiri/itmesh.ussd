@@ -31,6 +31,7 @@ db = mysql.connector.connect(
 
 def ussd_callback():
     
+    global response
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -129,7 +130,7 @@ def ussd_callback():
             return response
             
     
-    
+    return response
     
         
 if __name__ == "__main__":
