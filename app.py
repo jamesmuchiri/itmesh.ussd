@@ -121,7 +121,11 @@ def ussd_callback():
             variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
             ).format(variables.namef,loan_limit)       
 
-            variables.response_loan = False
+
+        else:
+            variables.response =("END Dear {}, please note we do not disburse advances after the 15th of every month."
+            ).format(variables.namef)  
+            
 
         
 
