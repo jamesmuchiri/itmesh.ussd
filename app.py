@@ -83,65 +83,65 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-    if checkNumber is None:
-        variables.isregistered=False    
-           
-    else:
-        variables.isregistered=True
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        name = mycursor.fetchone()
-        variables.namef = name[0]
+        if checkNumber is None:
+            variables.isregistered=False    
+            
+        else:
+            variables.isregistered=True
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            name = mycursor.fetchone()
+            variables.namef = name[0]
                     
         
 
-    if variables.text.lower().strip() =="balance":
-        
-        if variables.isregistered==True:
-            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-
-            ).format(variables.namef)
-
-    
-    if variables.text.lower().strip() =="loan":
-
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        loan_limit = mycursor.fetchone()
-
-        variables.response_loan = False
-
-        if variables.isregistered==True:
-            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-
-            ).format(variables.namef,loan_limit[0])
+        if variables.text.lower().strip() =="balance":
             
-            variables.response_loan = True
+            if variables.isregistered==True:
+                variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-            if variables.response_loan == True:
-                text_array = variables.text.split("*")
-                resent_text = text_array[len(text_array) - 1]
-                loan = loan_limit[0]
+                ).format(variables.namef)
 
-                print (resent_text)
-                print (int(loan))
+        
+        if variables.text.lower().strip() =="loan":
 
-                if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            loan_limit = mycursor.fetchone()
 
-                    variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-                    ).format(variables.namef,loan_limit[0])
+            variables.response_loan = False
+
+            if variables.isregistered==True:
+                variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+
+                ).format(variables.namef,loan_limit[0])
                 
+                variables.response_loan = True
+
+                if variables.response_loan == True:
+                    text_array = variables.text.split("*")
+                    resent_text = text_array[len(text_array) - 1]
+                    loan = loan_limit[0]
+
+                    print (resent_text)
+                    print (int(loan))
+
+                    if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
+
+                        variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                        ).format(variables.namef,loan_limit[0])
+                    
 
         
 
-    
-    if variables.isregistered==False:
-        variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-           
     else:
-        variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
-            ).format(variables.namef)
+        if variables.isregistered==False:
+            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
             
+        else:
+            variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+                ).format(variables.namef)
+                
     
     return variables.response
     
