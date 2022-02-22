@@ -118,7 +118,7 @@ def ussd_callback():
         
 
         print (resent_text)
-        print (int(float(variables.now)))
+        print (int(float(variables.loan_limit)))
 
         if int(float(str(resent_text))) < 500 or int(float(str(resent_text))) > int(float(str(variables.loan_limit))):
 
