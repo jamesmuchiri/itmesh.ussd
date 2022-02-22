@@ -1,4 +1,3 @@
-from tkinter import NO
 from urllib import response
 from flask import Flask, request
 import africastalking
