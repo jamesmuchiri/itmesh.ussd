@@ -31,12 +31,6 @@ db = mysql.connector.connect(
 
 def ussd_callback():
 
-    variables.response =""
-    variables.Fetch_Number = ""
-    variables.text =""
-    variables.isregistered = False
-    variables.response_loan = False
-    variables.namef=""
     
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
@@ -97,12 +91,6 @@ def ussd_callback():
         
 
     elif variables.text.lower().strip() =="balance" :
-        
-        
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        name = mycursor.fetchone()
-        variables.namef = name[0]
         if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
             ).format(variables.namef)
