@@ -52,8 +52,9 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if checkNumber is not None:
+        if (variables.Fetch_Number,) in checkNumber:
             variables.isregistered=True 
+            
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             variables.namef = mycursor.fetchone()
@@ -127,6 +128,8 @@ def ussd_callback():
             ).format(variables.namef)
             return response
             
+    
+    return response
     
         
 if __name__ == "__main__":
