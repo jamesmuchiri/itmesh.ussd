@@ -1,4 +1,3 @@
-
 from flask import Flask, request
 import africastalking
 import os
@@ -74,8 +73,8 @@ def ussd_callback():
         mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
         for row in records:
-            name = row[1]
-            print("Name = ", row[1])
+            name = row[2]
+            print("Name = ", row[2])
 
 
         variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
