@@ -77,36 +77,33 @@ def ussd_callback():
                                 "\n  -Amount"
                     ).format(Good_Evening)
 
-        
-        phone_number = request.values.get("phoneNumber", "default")
-        variables.Fetch_Number = phone_number.split("+")[1]
-        print(variables.Fetch_Number)
-
+    
         mycursor = db.cursor()
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if checkNumber is None:
-            variables.isregistered=False    
+    if checkNumber is None:
+        variables.isregistered=False    
            
-        else:
-            variables.isregistered=True
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            name = mycursor.fetchone()
-            variables.namef = name[0]
+    else:
+        variables.isregistered=True
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        name = mycursor.fetchone()
+        variables.namef = name[0]
                     
         
 
-    elif variables.text.lower().strip() =="balance":
+    if variables.text.lower().strip() =="balance":
         
         if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
             ).format(variables.namef)
 
-    elif variables.text.lower().strip() =="loan":
+    
+    if variables.text.lower().strip() =="loan":
 
         mycursor = db.cursor()
         mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
@@ -137,12 +134,12 @@ def ussd_callback():
 
         
 
-    else:
-        if variables.isregistered==False:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+    
+    if variables.isregistered==False:
+        variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
            
-        else:
-            variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+    else:
+        variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
             ).format(variables.namef)
             
     
