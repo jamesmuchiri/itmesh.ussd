@@ -101,7 +101,7 @@ def ussd_callback():
 
 
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-            ).format(variables.namef,loan_limit)
+            ).format(variables.namef,variables.now)
             
         variables.response_loan = True
 
@@ -119,7 +119,7 @@ def ussd_callback():
         if int(float(resent_text)) > int(float(variables.now)) or int(float(resent_text)) < 500:
 
             variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-            ).format(variables.namef,loan_limit)       
+            ).format(variables.namef,variables.now)       
 
 
         else:
