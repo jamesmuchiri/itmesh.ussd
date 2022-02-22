@@ -86,12 +86,13 @@ def ussd_callback():
         
             
     elif variables.text.lower().strip() =="loan" :
-
+        global loan_limit
+        
         mycursor = db.cursor()
         mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         records = mycursor.fetchall()
         for row in records:
-            name = row[2]
+            variables.namef = row[2]
             loan_limit = row[24]
             print("Name = ", row[2])
             print("Loan_limmit = ", row[24])
@@ -102,7 +103,7 @@ def ussd_callback():
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
             ).format(name,loan_limit)
             
-        variables.response_loan = True
+            variables.response_loan = True
 
             
     elif variables.response_loan == True:  
@@ -110,15 +111,15 @@ def ussd_callback():
         
         text_array = variables.text.split("*")
         resent_text = text_array[len(text_array) - 1]
-        loan = loan_limit[0]
+        
 
         print (resent_text)
-        print (int(loan))
+        print (int(loan_limit))
 
-        if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
+        if int(float(resent_text)) > int(float(loan_limit)) or int(float(resent_text)) < 500:
 
             variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-            ).format(variables.namef,loan_limit[0])       
+            ).format(variables.namef,loan_limit)       
 
             variables.response_loan = False
 
