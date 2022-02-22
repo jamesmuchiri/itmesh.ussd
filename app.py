@@ -131,7 +131,7 @@ def ussd_callback():
 
     else:
 
-        if variables.response_loan == True:
+        if variables.response_loan == False:
             variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
                 ).format(variables.namef)
             
