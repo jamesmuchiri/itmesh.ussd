@@ -101,7 +101,7 @@ def ussd_callback():
 
 
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-            ).format(name,loan_limit)
+            ).format(variables.namef,loan_limit)
             
             variables.response_loan = True
 
