@@ -1,3 +1,4 @@
+from unicodedata import name
 from flask import Flask, request
 import africastalking
 import os
@@ -58,9 +59,6 @@ def ussd_callback():
                             "\n  -Balance"
                             "\n  -Loan"
                             "\n  -Amount")
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            variables.namef = mycursor.fetchone()
 
       
         else:
@@ -72,17 +70,26 @@ def ussd_callback():
 
     elif variables.text.lower().strip() =="balance" :
 
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        records = mycursor.fetchall()
+        for row in records:
+            name = row[1]
+            print("Name = ", row[1])
+
+
         variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
-        ).format(variables.namef[0])
+        ).format(name)
             
         
             
     elif variables.text.lower().strip() =="loan" :
 
         mycursor = db.cursor()
-        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        mycursor.execute('''SELECT first_name,loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         loan_limit = mycursor.fetchone()
 
+        
 
 
         variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
