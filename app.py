@@ -55,19 +55,19 @@ def ussd_callback():
             number = row[6]
             print("Number = ", row[6])
 
-        if variables.Fetch_Number == number:
-            variables.response =("CON How may i help you"
-                            "\n  -Limit "
-                            "\n  -Balance"
-                            "\n  -Loan"
-                            "\n  -Amount")
+            if variables.Fetch_Number == number:
+                variables.response =("CON How may i help you"
+                                "\n  -Limit "
+                                "\n  -Balance"
+                                "\n  -Loan"
+                                "\n  -Amount")
 
-      
-        else:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
-            variables.isregistered=False  
         
+            else:
+                variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+                variables.isregistered=False  
             
+                
 
 
     elif variables.text.lower().strip() =="balance" :
@@ -116,9 +116,9 @@ def ussd_callback():
         print (resent_text)
         print (int(float(variables.now)))
 
-        if int(float(str(resent_text))) < 500:
+        if int(float(str(resent_text))) < 500 and int(float(str(resent_text))) > int(float(str(variables.now))):
 
-            variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+            variables.response =("END Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
             ).format(variables.namef,variables.now)       
 
 
