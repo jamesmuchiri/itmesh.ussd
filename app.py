@@ -1,4 +1,3 @@
-from urllib import response
 from flask import Flask, request
 import africastalking
 import os
@@ -44,6 +43,13 @@ def ussd_callback():
     
     if variables.text == "": 
 
+        response =("CON {}" "\nHow may i help you"
+                            "\n  -Limit "
+                            "\n  -Balance"
+                            "\n  -Loan"
+                            "\n  -Amount")
+
+
         phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
@@ -52,37 +58,6 @@ def ussd_callback():
         mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
         checkNumber = mycursor.fetchall()
         print(checkNumber)
-
-        if 5<= kenya_time <12 :
-            Good_Morning="Good Morning"
-            response =("CON {}" "\nHow may i help you"
-                                "\n  -Limit "
-                                "\n  -Balance"
-                                "\n  -Loan"
-                                "\n  -Amount"
-            ).format(Good_Morning)
-            return response
-            
-        elif  12 <= kenya_time < 17 :
-            Good_Afternoon="Good Afternoon"
-            response =("CON {}""\nHow may i help you"
-                                "\n  -Limit "
-                                "\n  -Balance"
-                                "\n  -Loan"
-                                "\n  -Amount"
-                    ).format(Good_Afternoon)
-            return response  
-
-        else:
-            Good_Evening="Good Evening"
-            response =("CON {}""\nHow may i help you"
-                                "\n  -Limit "
-                                "\n  -Balance"
-                                "\n  -Loan"
-                                "\n  -Amount"
-                    ).format(Good_Evening)
-            return response
-
 
         if checkNumber is not None:
             variables.isregistered=True 
@@ -94,7 +69,8 @@ def ussd_callback():
         else:
             variables.isregistered=False  
             return False 
-    
+            
+
 
     elif variables.text.lower().strip() =="balance" :
 
@@ -120,7 +96,7 @@ def ussd_callback():
             name = mycursor.fetchone()
             variables.namef = name[0]
 
-            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+            response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
             ).format(variables.namef,loan_limit[0])
             
@@ -136,7 +112,7 @@ def ussd_callback():
 
                 if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
 
-                    variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                    response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
                     ).format(variables.namef,loan_limit[0])
                 
 
@@ -144,14 +120,14 @@ def ussd_callback():
 
     else:
         if variables.isregistered==False:
-            variables.response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
+            response =("END Dear customer, we do not seem to have your details on file. Please visit the office to get registered.")
            
         else:
-            variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+            response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
             ).format(variables.namef)
             
     
-    return variables.response
+    return response
     
         
 if __name__ == "__main__":
