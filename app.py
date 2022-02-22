@@ -3,7 +3,6 @@ import africastalking
 import os
 from datetime import datetime
 import maya
-from sqlalchemy import null
 import variables
 from maya import MayaInterval
 from dateutil.parser import parse
