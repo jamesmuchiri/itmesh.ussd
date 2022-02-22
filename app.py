@@ -53,12 +53,6 @@ def ussd_callback():
         print(checkNumber)
 
         if (variables.Fetch_Number,) in checkNumber:
-            variables.isregistered=True 
-
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            variables.namef = mycursor.fetchone()
-
             variables.response =("CON How may i help you"
                             "\n  -Limit "
                             "\n  -Balance"
@@ -74,6 +68,10 @@ def ussd_callback():
 
 
     elif variables.text.lower().strip() =="balance" :
+
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        variables.namef = mycursor.fetchone()
 
         variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
         ).format(variables.namef[0])
