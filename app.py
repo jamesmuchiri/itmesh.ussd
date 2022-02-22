@@ -125,7 +125,7 @@ def ussd_callback():
         else:
             variables.response =("END Dear {}, please note we do not disburse advances after the 15th of every month."
             ).format(variables.namef)  
-            variables.response_loan = False
+            
             
 
         
