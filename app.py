@@ -39,26 +39,23 @@ def ussd_callback():
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
 
+    variables.Fetch_Number  = request.values.get("phoneNumber", "default")
+    print(variables.Fetch_Number)
+
+    mycursor = db.cursor()
+    mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+    records = mycursor.fetchall()
+
+    for row in records:
+        n = row[6]
+        print("Number = ", row[6])
+        variables.number = "+" + str(n)
+        print(variables.number)
+
+
 
     
     if variables.text == "": 
-
-        phone_number = request.values.get("phoneNumber", "default")
-        variables.Fetch_Number = phone_number.split("+")[1]
-        print(variables.Fetch_Number)
-
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        records = mycursor.fetchall()
-
-        
-        for row in records:
-            variables.number = row[6]
-            print("Number = ", row[6])
-
-            n = row[6]
-            nf = "+" + str(n)
-            print(nf)
 
         if variables.Fetch_Number == variables.number:
             variables.response =("CON How may i help you"
