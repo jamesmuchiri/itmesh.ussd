@@ -38,19 +38,34 @@ def ussd_callback():
     variables.response_loan = False
     variables.namef=""
     
+    now = maya.MayaDT.from_datetime(datetime.utcnow())
+    kenya_time = now.hour +3
     session_id = request.values.get("sessionId", None)
     service_code = request.values.get("serviceCode", None)
     variables.text = request.values.get("text", "default")
 
-    now = maya.MayaDT.from_datetime(datetime.utcnow())
-    kenya_time = now.hour +3
+    phone_number = request.values.get("phoneNumber", "default")
+    variables.Fetch_Number = phone_number.split("+")[1]
+    print(variables.Fetch_Number)
+
+    
+
+    mycursor = db.cursor()
+    mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+    checkNumber = mycursor.fetchall()
+    print(checkNumber)
+
+    if checkNumber is None:
+        variables.isregistered=False    
+            
+    else:
+        variables.isregistered=True
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        name = mycursor.fetchone()
+        variables.namef = name[0]
     
     if variables.text == "": 
-        phone_number = request.values.get("phoneNumber", "default")
-        variables.Fetch_Number = phone_number.split("+")[1]
-        print(variables.Fetch_Number)
-
-
         if 5<= kenya_time <12 :
             Good_Morning="Good Morning"
             variables.response =("CON {}" "\nHow may i help you"
@@ -78,58 +93,45 @@ def ussd_callback():
                     ).format(Good_Evening)
 
     
-        mycursor = db.cursor()
-        mycursor.execute('''SELECT primary_phone FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        checkNumber = mycursor.fetchall()
-        print(checkNumber)
-
-        if checkNumber is None:
-            variables.isregistered=False    
-            
-        else:
-            variables.isregistered=True
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            name = mycursor.fetchone()
-            variables.namef = name[0]
+    
                     
         
 
-        if variables.text.lower().strip() =="balance":
+    elif variables.text.lower().strip() =="balance":
             
-            if variables.isregistered==True:
-                variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
+        if variables.isregistered==True:
+            variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
 
-                ).format(variables.namef)
+            ).format(variables.namef)
 
         
-        if variables.text.lower().strip() =="loan":
+    elif variables.text.lower().strip() =="loan":
 
-            mycursor = db.cursor()
-            mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-            loan_limit = mycursor.fetchone()
+        mycursor = db.cursor()
+        mycursor.execute('''SELECT loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        loan_limit = mycursor.fetchone()
 
-            variables.response_loan = False
+        variables.response_loan = False
 
-            if variables.isregistered==True:
-                variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
+        if variables.isregistered==True:
+            variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
 
                 ).format(variables.namef,loan_limit[0])
                 
-                variables.response_loan = True
+            variables.response_loan = True
 
-                if variables.response_loan == True:
-                    text_array = variables.text.split("*")
-                    resent_text = text_array[len(text_array) - 1]
-                    loan = loan_limit[0]
+            if variables.response_loan == True:
+                text_array = variables.text.split("*")
+                resent_text = text_array[len(text_array) - 1]
+                loan = loan_limit[0]
 
-                    print (resent_text)
-                    print (int(loan))
+                print (resent_text)
+                print (int(loan))
 
-                    if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
+                if int(float(resent_text)) > int(float(loan)) or int(float(resent_text)) < 500:
 
-                        variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
-                        ).format(variables.namef,loan_limit[0])
+                    variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
+                    ).format(variables.namef,loan_limit[0])
                     
 
         
