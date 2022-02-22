@@ -116,7 +116,7 @@ def ussd_callback():
         print (resent_text)
         print (int(float(variables.now)))
 
-        if int(float(resent_text)) < 500:
+        if int(float(str(resent_text))) < 500:
 
             variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
             ).format(variables.namef,variables.now)       
