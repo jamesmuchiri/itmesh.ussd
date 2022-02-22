@@ -103,7 +103,7 @@ def ussd_callback():
             variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
             ).format(variables.namef,loan_limit)
             
-            variables.response_loan = True
+        variables.response_loan = True
 
             
     elif variables.response_loan == True:  
@@ -130,8 +130,10 @@ def ussd_callback():
         
 
     else:
-        variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
-            ).format(variables.namef)
+
+        if variables.response_loan == True:
+            variables.response = ( "END Dear {}, you sent the wrong keyword/amount, please send the words Loan to $short_code." 
+                ).format(variables.namef)
             
             
     
