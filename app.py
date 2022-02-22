@@ -1,3 +1,4 @@
+from tkinter import NO
 from flask import Flask, request
 import africastalking
 import os
@@ -38,10 +39,10 @@ def ussd_callback():
 
     now = maya.MayaDT.from_datetime(datetime.utcnow())
     kenya_time = now.hour +3
+
+
     
     if variables.text == "": 
-
-
         phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
@@ -51,8 +52,12 @@ def ussd_callback():
         checkNumber = mycursor.fetchall()
         print(checkNumber)
 
-        if (variables.Fetch_Number,) in checkNumber:
-            variables.isregistered=True   
+        if checkNumber is not None:
+            variables.isregistered=True
+            mycursor = db.cursor()
+            mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+            name = mycursor.fetchone()
+            variables.namef = name[0]
         else:
             variables.isregistered=False   
             
@@ -91,6 +96,7 @@ def ussd_callback():
         
 
     elif variables.text.lower().strip() =="balance" :
+
         if variables.isregistered==True:
             variables.response =("END Dear {}, your effective balance as at $date is KES $loan_balance."
             ).format(variables.namef)
