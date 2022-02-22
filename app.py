@@ -93,7 +93,7 @@ def ussd_callback():
         records = mycursor.fetchall()
         for row in records:
             variables.namef = row[2]
-            loan_limit = row[24]
+            variables.now = row[24]
             print("Name = ", row[2])
             print("Loan_limmit = ", row[24])
 
@@ -114,9 +114,9 @@ def ussd_callback():
         
 
         print (resent_text)
-        print (int(loan_limit))
+        print (int(variables.now))
 
-        if int(float(resent_text)) > int(float(loan_limit)) or int(float(resent_text)) < 500:
+        if int(float(resent_text)) > int(float(variables.now)) or int(float(resent_text)) < 500:
 
             variables.response =("CON Dear {}, the loan value entered is invalid, please enter a value between ksh.500 and ksh.{}"
             ).format(variables.namef,loan_limit)       
@@ -125,6 +125,7 @@ def ussd_callback():
         else:
             variables.response =("END Dear {}, please note we do not disburse advances after the 15th of every month."
             ).format(variables.namef)  
+            variables.response_loan = False
             
 
         
