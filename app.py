@@ -1,3 +1,4 @@
+from unicodedata import name
 from flask import Flask, request
 import africastalking
 import os
@@ -85,14 +86,19 @@ def ussd_callback():
     elif variables.text.lower().strip() =="loan" :
 
         mycursor = db.cursor()
-        mycursor.execute('''SELECT first_name,loan_limit FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
-        loan_limit = mycursor.fetchone()
+        mycursor.execute('''SELECT * FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
+        records = mycursor.fetchall()
+        for row in records:
+            name = row[2]
+            loan_limit = row[24]
+            print("Name = ", row[2])
+            print("Loan_limmit = ", row[24])
 
         
 
 
         variables.response =("CON Dear {}, you qualify for a new loan. Please enter a loan value between 500 and {}"
-        ).format(variables.namef[0],loan_limit[0])
+        ).format(name,loan_limit)
             
         variables.response_loan = True
 
