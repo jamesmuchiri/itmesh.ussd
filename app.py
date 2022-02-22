@@ -43,13 +43,6 @@ def ussd_callback():
     
     if variables.text == "": 
 
-        response =("CON {}" "\nHow may i help you"
-                            "\n  -Limit "
-                            "\n  -Balance"
-                            "\n  -Loan"
-                            "\n  -Amount")
-
-
         phone_number = request.values.get("phoneNumber", "default")
         variables.Fetch_Number = phone_number.split("+")[1]
         print(variables.Fetch_Number)
@@ -64,11 +57,18 @@ def ussd_callback():
             mycursor = db.cursor()
             mycursor.execute('''SELECT first_name FROM s_users_primary WHERE primary_phone = (%s)''', (variables.Fetch_Number,))
             variables.namef = mycursor.fetchone()
-            return True
+
+            response =("CON {}" "\nHow may i help you"
+                            "\n  -Limit "
+                            "\n  -Balance"
+                            "\n  -Loan"
+                            "\n  -Amount")
+            return response
+            
            
         else:
             variables.isregistered=False  
-            return False 
+        
             
 
 
